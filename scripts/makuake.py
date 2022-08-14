@@ -4,13 +4,13 @@ from datetime import datetime, timedelta
 import requests
 from slack_sdk.webhook import WebhookClient
 from termcolor import colored
+from bs4 import BeautifulSoup
 
 from config import env_prefix
 
 
 threshold_day = os.environ.get(f"{env_prefix}THRESHOLD_DAY", 1)
 threshold = datetime.now() - timedelta(days=threshold_day)
-user_agent = os.environ.get(f"{env_prefix}USER_AGENT", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36")
 slack_webhook_url = os.environ.get(f"{env_prefix}SLACK_WEBHOOK_URL", None)
 slack_channel = os.environ.get(f"{env_prefix}SLACK_CHANNEL", None)
 slack_username = os.environ.get(f"{env_prefix}SLACK_USERNAME", None)
@@ -18,7 +18,6 @@ slack_user_icon = os.environ.get(f"{env_prefix}SLACK_USER_ICON", None)
 slack_client = WebhookClient(slack_webhook_url)
 
 print("-"*10)
-print(f"user-agent: {user_agent}")
 print(f"threshold day: {threshold}")
 print(f"slack channel: {slack_channel}")
 print(f"slack username: {slack_username}")
@@ -29,43 +28,44 @@ else:
     print("enable slack notification")
 print("-"*10)
 
-url = "https://www.kickstarter.com/discover/advanced"
-session = requests.session()
-
-params = {
-    "category_id": 34,
-    "woe_id": 23424856,
-    "sort": "newest",
-    "seed": "2733207",
+res = requests.get("https://api.makuake.com/v2/projects", params={
     "page": 1,
-    "format": "json",
-}
-headers = {
-    "user-agent": user_agent,
-    "authority": "www.kickstarter.com",
-}
-
-res = session.get(url, params=params, headers=headers)
+    "per_page": 15,
+    "tag_ids": 141,
+})
 
 try:
     data = res.json()
 except:
     print(res.text)
     exit(1)
+else:
+    if not res.ok:
+        print(data)
+        exit(1)
 
-for project in data["projects"]:
-    name = project["name"]
-    launched_at = datetime.fromtimestamp(project["launched_at"])
-    url = project["urls"]["web"]["project"]
+for d in data["projects"]:
+    name = d["title"]
+    id = d["id"]
+    is_new = d["is_new"]
+    url = d["url"]
 
-    print(f"check: {name} ({launched_at})", end=" ")
-    if threshold < launched_at:
+    if is_new:
+        res = requests.get(url)
+        bs = BeautifulSoup(res.text, 'html.parser')
+        start_at_str = bs.select("meta[property='note:start_at']")[0]["content"]
+        start_at = datetime.strptime(start_at_str, '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None)
+    else:
+        continue
+
+    print(f"check: {name} ({is_new}) {start_at}", end=" ")
+    if threshold < start_at:
+        msg = f"{name}のクラウドファンディングが始まりました\n{url}"
+
         if slack_webhook_url is None:
             print(colored("skip(slack disabled)", "red"))
             continue
 
-        print(colored("post", "green"))
-        msg = f"{name} のクラウドファンディングが開始しました\n{url}"
         slack_client.send_dict({k: v for k, v in {
             "text": msg,
             "channel": slack_channel,
