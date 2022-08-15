@@ -13,6 +13,7 @@ spec:
           containers:
           - name: boardgame
             image: ghcr.io/skyblue3350/cronjobs:main
+            imagePullPolicy: Always
             command:
             - python
             - makuake.py
