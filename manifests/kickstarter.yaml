@@ -12,14 +12,14 @@ spec:
         spec:
           containers:
           - name: boardgame
-            image: ghcr.io/skyblue3350/cronjobs:master
+            image: ghcr.io/skyblue3350/cronjobs:main
             command:
             - python
             - kickstarter.py
             env:
             - name: SLACK_USERNAME
               value: kickstarter
-            - name: SLACK_ICON
+            - name: SLACK_USER_ICON
               value: kickstarter
             envFrom:
             - secretRef:
