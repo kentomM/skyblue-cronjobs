@@ -54,6 +54,7 @@ for d in data["projects"]:
         start_at_str = bs.select("meta[property='note:start_at']")[0]["content"]
         start_at = datetime.strptime(start_at_str, '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None)
     else:
+        print(f"{name} is not new")
         continue
 
     print(f"check: {name} ({is_new}) {start_at}", end=" ")
