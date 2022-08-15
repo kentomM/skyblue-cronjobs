@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: makuake
+  namespace: cronjob
+spec:
+  # 毎日 12時に実行(JST+9)
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: boardgame
+            image: ghcr.io/skyblue3350/cronjobs:master
+            command:
+            - python
+            - makuake.py
+            env:
+            - name: SLACK_USERNAME
+              value: makuake
+            - name: SLACK_ICON
+              value: makuake
+            envFrom:
+            - secretRef:
+                name: slack
+          restartPolicy: OnFailure
