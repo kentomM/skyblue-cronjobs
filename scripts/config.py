@@ -1,1 +1,0 @@
-env_prefix ="CRONJOB_KICKSTARTER_"

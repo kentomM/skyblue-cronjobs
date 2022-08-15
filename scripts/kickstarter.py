@@ -5,16 +5,14 @@ import requests
 from slack_sdk.webhook import WebhookClient
 from termcolor import colored
 
-from config import env_prefix
 
-
-threshold_day = os.environ.get(f"{env_prefix}THRESHOLD_DAY", 1)
+threshold_day = os.environ.get("THRESHOLD_DAY", 1)
 threshold = datetime.now() - timedelta(days=threshold_day)
-user_agent = os.environ.get(f"{env_prefix}USER_AGENT", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36")
-slack_webhook_url = os.environ.get(f"{env_prefix}SLACK_WEBHOOK_URL", None)
-slack_channel = os.environ.get(f"{env_prefix}SLACK_CHANNEL", None)
-slack_username = os.environ.get(f"{env_prefix}SLACK_USERNAME", None)
-slack_user_icon = os.environ.get(f"{env_prefix}SLACK_USER_ICON", None)
+user_agent = os.environ.get("USER_AGENT", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36")
+slack_webhook_url = os.environ.get("SLACK_WEBHOOK_URL", None)
+slack_channel = os.environ.get("SLACK_CHANNEL", None)
+slack_username = os.environ.get("SLACK_USERNAME", None)
+slack_user_icon = os.environ.get("SLACK_USER_ICON", None)
 slack_client = WebhookClient(slack_webhook_url)
 
 print("-"*10)
