@@ -50,8 +50,8 @@ for d in data["projects"]:
 
     if is_new:
         res = requests.get(url)
-        bs = BeautifulSoup(res.text, 'html.parser')
-        start_at_str = bs.select("meta[property='note:start_at']")[0]["content"]
+        bs = BeautifulSoup(res.text, "html.parser")
+        start_at_str = bs.select_one("meta[property='note:start_at']")["content"]
         start_at = datetime.strptime(start_at_str, '%Y-%m-%dT%H:%M:%S%z').replace(tzinfo=None)
     else:
         print(f"{name} is not new")
