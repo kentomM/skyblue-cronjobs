@@ -20,6 +20,8 @@ spec:
             env:
             - name: TZ
               value: Asia/Tokyo
+            - name: TARGET_PAGES
+              value: 1400847289,1400847288,1400847287
             envFrom:
             - secretRef:
                 name: discord-atom

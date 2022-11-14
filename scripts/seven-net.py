@@ -6,12 +6,9 @@ from bs4 import BeautifulSoup
 
 
 webhook = os.environ.get("DISCORD_WEBHOOK", None)
+target_pages = [ f"https://7net.omni7.jp/detail/{x}" for x in os.environ.get("TARGET_PAGES", "").split(",") if x]
 
-target_pages = [
-    "https://7net.omni7.jp/detail/1400847289",
-    "https://7net.omni7.jp/detail/1400847288",
-    "https://7net.omni7.jp/detail/1400847287",
-]
+print(target_pages)
 
 for url in target_pages:
     print("-"*10)
@@ -25,10 +22,7 @@ for url in target_pages:
 
     print(header, elm)
 
-    if elm is None:
-        if webhook is None:
-            pass
-
+    if elm is None and webhook is not None:
         res = requests.post(
             webhook,
             data={
