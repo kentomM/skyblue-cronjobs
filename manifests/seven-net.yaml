@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: seven-net
+  namespace: cronjob
+spec:
+  # 5分ごとに実行する
+  schedule: "5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: seven-net
+            image: ghcr.io/skyblue3350/cronjobs:main
+            imagePullPolicy: Always
+            command:
+            - python
+            - seven-net.py
+            env:
+            - name: TZ
+              value: Asia/Tokyo
+            envFrom:
+            - secretRef:
+                name: discord-atom
+          restartPolicy: OnFailure
