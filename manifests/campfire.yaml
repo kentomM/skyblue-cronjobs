@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: campfire
+  namespace: cronjob
+spec:
+  # 毎日 12時に実行(JST+9)
+  schedule: "0 3 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: boardgame
+            image: ghcr.io/skyblue3350/cronjobs:main
+            imagePullPolicy: Always
+            command:
+            - python
+            - campfire.py
+            env:
+            - name: TZ
+              value: Asia/Tokyo
+            - name: SLACK_USERNAME
+              value: campfire
+            - name: SLACK_USER_ICON
+              value: fire
+            envFrom:
+            - secretRef:
+                name: slack
+          restartPolicy: OnFailure
