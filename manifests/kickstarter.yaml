@@ -18,6 +18,8 @@ spec:
             - python
             - kickstarter.py
             env:
+            - name: TZ
+              value: Asia/Tokyo
             - name: SLACK_USERNAME
               value: kickstarter
             - name: SLACK_USER_ICON

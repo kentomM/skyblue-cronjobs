@@ -18,6 +18,8 @@ spec:
             - python
             - makuake.py
             env:
+            - name: TZ
+              value: Asia/Tokyo
             - name: SLACK_USERNAME
               value: makuake
             - name: SLACK_USER_ICON
