@@ -1,6 +1,5 @@
-import datetime as dt
 import os
-
+from datetime import datetime
 
 import jpholiday
 import requests
@@ -37,7 +36,7 @@ slack_username = os.environ.get("SLACK_USERNAME", None)
 slack_user_icon = os.environ.get("SLACK_USER_ICON", None)
 slack_client = WebhookClient(slack_webhook_url)
 
-today = dt.date(2022, 11, 10)
+today = datetime.now()
 next_month_start = today + relativedelta(months=1, day=1)
 next_month_end = today + relativedelta(months=2, day=1, days=-1)
 
@@ -53,6 +52,8 @@ kouho = "\n".join([ f"{d.month}/{d.day} ({labels[d.weekday()]}) 13:00-" for d in
 url = createChouseisan(title, description, kouho)
 
 body = f"「{title}」のお知らせ\n{url}"
+
+print(body)
 
 if discord_webhook is not None:
     res = requests.post(
