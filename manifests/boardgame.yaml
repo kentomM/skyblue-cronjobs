@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: boardgame
+  namespace: cronjob
+spec:
+  # 毎日 12時に実行(JST+9)
+  schedule: "0 3 18 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: boardgame
+            image: ghcr.io/skyblue3350/cronjobs:main
+            imagePullPolicy: Always
+            command:
+            - python
+            - boardgame.py
+            env:
+            - name: TZ
+              value: Asia/Tokyo
+            - name: SLACK_CHANNEL
+              value: "#general"
+            - name: SLACK_USERNAME
+              value: Chouseisan
+            - name: SLACK_USER_ICON
+              value: calendar
+            envFrom:
+            - secretRef:
+                name: discord-tg-boardgame
+            - secretRef:
+                name: slack
+          restartPolicy: OnFailure
