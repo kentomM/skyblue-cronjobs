@@ -41,7 +41,7 @@ next_month_start = today + relativedelta(months=1, day=1)
 next_month_end = today + relativedelta(months=2, day=1, days=-1)
 
 holiday = [ x[0] for x in jpholiday.between(next_month_start, next_month_end)]
-days = [ next_month_start + relativedelta(days=x) for x in range((next_month_end-next_month_start).days+1)]
+days = [ (next_month_start + relativedelta(days=x)).date() for x in range((next_month_end-next_month_start).days+1)]
 
 suggestion_days = [x for x in days if x in holiday or x.weekday() in [5, 6]]
 
