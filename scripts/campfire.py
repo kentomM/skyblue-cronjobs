@@ -38,10 +38,15 @@ res = requests.get(f"{origin}/projects/search", params={
 bs = BeautifulSoup(res.text, "html.parser")
 
 for project in bs.select(".box-in"):
-    name = project.select_one(".box-title > a > h4").get_text()
-    url = origin + project.select_one(".box-title > a")["href"]
+    project_id = project.attrs["data_project_id"]
+
+    res = requests.get(f"https://camp-fire.jp/projects/{project_id}/card_html")
+    bs_tmp = BeautifulSoup(res.text, "html.parser")
+
+    name = bs_tmp.select_one(".box-title h4").get_text()
+    url = origin + bs_tmp.select_one(".box-title a")["href"]
     # プログレスバーがない場合はサロン扱い
-    is_salon = project.select_one(".bar") is None
+    is_salon = bs_tmp.select_one(".bar") is None
  
     if is_salon:
         continue
@@ -55,7 +60,7 @@ for project in bs.select(".box-in"):
         msg = f"{name}のクラウドファンディングが始まりました\n{url}"
 
         if slack_webhook_url is None:
-            print(colored("skip(slack disabled)", "red"))
+            print(colored("notification skip(slack disabled)", "red"))
             continue
 
         slack_client.send_dict({k: v for k, v in {
