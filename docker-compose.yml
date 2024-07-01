@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./.devcontainer/app/dockerfile
+    volumes:
+      - "./scripts:/workspace/scripts"
+      - "./.vscode:/workspace/.vscode"
+    tty: true
+    depends_on:
+      - selenium
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - 44444:4444
+      - 47900:7900
+    shm_size: "2gb"

@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "cronjobs"
+name = "scraping"
 version = "0.1.0"
 description = ""
-authors = ["sky <skyblue3350@gmail.com>"]
+authors = ["kentom <tomoki0124mf@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
@@ -13,6 +13,7 @@ termcolor = "^1.1.0"
 beautifulsoup4 = "^4.11.1"
 jpholiday = "^0.1.8"
 python-dateutil = "^2.8.2"
+selenium = "^4.22.0"
 
 [tool.poetry.dev-dependencies]
 
